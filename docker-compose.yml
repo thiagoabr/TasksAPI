@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+
+  tasksapi.services:
+    container_name: tasksappi
+    image: ${DOCKER_REGISTRY-}tasksapiservices
+    build:
+      context: .
+      dockerfile: TasksAPI.Services/Dockerfile
+    ports:
+        - 65432:80
+    depends_on:
+        - db
+        - rabbitmq
+        
+  db:
+    container_name: sqlserverbd
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+        SA_PASSWORD: "Coti@2023"
+        ACCEPT_EULA: "Y"
+    ports:
+        - 1433:1433  
+        
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    hostname: "rabbitmq"
+    ports:
+        - 5672:5672
+        - 15672:15672
+    environment:
+        - RABBITMQ_DEFAULT_USER=guest
+        - RABBITMQ_DEFAULT_PASS=guest
